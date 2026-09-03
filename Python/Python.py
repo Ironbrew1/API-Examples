@@ -1,38 +1,36 @@
 from pathlib import Path
+import os
 import time
 import uuid
 
 import requests
 
+
 BASE_URL = "https://ironbrew1.com"
 API_KEY = "APIKEYHERE"
 
-INPUT_PATH = "input.lua"
-OUTPUT_PATH = "output.lua"
+INPUT_PATH = Path("input.lua")
+OUTPUT_PATH = Path("output.lua")
 
-PLATFORM = "luau"
-AGGRESSIVE_OPTIMIZATIONS = 2
-INTENSE_VM_SCRAMBLING = True
-ANTI_TAMPER = False
-ENABLE_VM_COMPRESSION = False
+CLIENT_ID = "stable id here"
 
-source = Path(INPUT_PATH).read_bytes()
+source = INPUT_PATH.read_bytes()
 
 session = requests.Session()
 session.headers.update({
-    "Key": API_KEY
+    "Key": API_KEY,
+    "X-IB1-Client-Id": CLIENT_ID,
 })
 
 params = {
-    "fileName": Path(OUTPUT_PATH).name,
-    "platform": PLATFORM,
-    "aggressiveOptimizations": AGGRESSIVE_OPTIMIZATIONS,
-    "intenseVmScrambling": INTENSE_VM_SCRAMBLING,
-    "antiTamper": ANTI_TAMPER,
-    "enableVmCompression": ENABLE_VM_COMPRESSION,
+    "fileName": OUTPUT_PATH.name,
+    "platform": "roblox",
+    "aggressiveOptimizations": "2",
+    "intenseVmScrambling": "true",
+    "enableVmCompression": "false",
 }
 
-queue_res = session.post(
+queue_response = session.post(
     f"{BASE_URL}/queue",
     params=params,
     data=source,
@@ -42,9 +40,9 @@ queue_res = session.post(
     },
     timeout=60,
 )
-queue_res.raise_for_status()
+queue_response.raise_for_status()
 
-upload = queue_res.json()
+upload = queue_response.json()
 upload_guid = upload["uploadGuid"]
 
 print(f"Queued obfuscation: {upload_guid}")
@@ -55,13 +53,13 @@ while True:
     if time.monotonic() >= deadline:
         raise TimeoutError("Obfuscation did not finish within 15 minutes")
 
-    status_res = session.get(
+    status_response = session.get(
         f"{BASE_URL}/uploads/{upload_guid}",
         timeout=30,
     )
-    status_res.raise_for_status()
+    status_response.raise_for_status()
 
-    status_data = status_res.json()
+    status_data = status_response.json()
     status = status_data["status"]
 
     print(f"Status: {status}")
@@ -69,18 +67,23 @@ while True:
     if status == "completed":
         break
 
-    if status in ("failed", "timed_out"):
+    if status in {"failed", "timed_out"}:
         failure = status_data.get("failureCode") or status
         raise RuntimeError(f"Obfuscation failed: {failure}")
 
-    retry_after = int(status_res.headers.get("Retry-After", "2"))
+    try:
+        retry_after = int(status_response.headers.get("Retry-After", "2"))
+    except ValueError:
+        retry_after = 2
+
     time.sleep(max(retry_after, 1))
 
-download_res = session.get(
+download_response = session.get(
     f"{BASE_URL}/download-script/{upload_guid}",
     timeout=120,
 )
-download_res.raise_for_status()
+download_response.raise_for_status()
 
-Path(OUTPUT_PATH).write_bytes(download_res.content)
+OUTPUT_PATH.write_bytes(download_response.content)
+
 print(f"Saved obfuscated script to {OUTPUT_PATH}")
