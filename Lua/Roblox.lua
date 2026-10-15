@@ -8,7 +8,7 @@ local maxwait = 240
 local maxfails = 3
 local breakconditions = {"failed", "completed"}
 local options = {
-	["platform"] = {"luau", "universal"},
+	["platform"] = {"roblox", "luau", "universal"},
 	["aggressiveOptimizations"] = {"0", "1", "2"},
 	["intenseVmScrambling"] = {"false", "true"},
 	["enableVmCompression"] = {"false", "true"},
@@ -32,7 +32,7 @@ local obfaction = obfmenu:AddNewAction(math.random(), "Obfuscate", "")
 obfmenu:AddSeparator()
 
 if not plugin:GetSetting("PreviouslyUsed") then
-	warn("WARNING: DO NOT USE THIS PLUGIN TO DISTRIBUTE OFBUSCATED CODE ON THE CREATOR MARKETPLACE. That would be a violation of Roblox's TOS. Only use this plugin to secure your client/server scripts. You will no longer receive this warning.")
+	warn("WARNING: DO NOT USE THIS PLUGIN TO DISTRIBUTE OBFUSCATED CODE ON THE CREATOR MARKETPLACE. That would be a violation of Roblox's TOS. Only use this plugin to secure your client/server scripts. You will no longer receive this warning.")
 	for i,v in pairs(options) do plugin:SetSetting(i, v[1]) end
 	plugin:SetSetting("PreviouslyUsed", true)
 end
@@ -104,7 +104,7 @@ obfaction.Triggered:Connect(function()
 				failcount += 1
 				warn("Request failed "..failcount.." time(s). Error data: "..data)
 			end
-		until failcount >= maxfails or table.find(breakconditions, response["status"])
+		until failcount >= maxfails or elapsedtime > maxwait or table.find(breakconditions, response["status"])
 		if response["status"] ~= "completed" then warn("Obfuscation failed. Please try again later. ("..elapsedtime.."/"..failcount.."/"..response["status"]..")") return end
 		local succ, download = pcall(reqasync, response["downloadUrl"], "GET")
 		local newscript = active:Clone()
