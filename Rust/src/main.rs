@@ -58,7 +58,7 @@ fn main() -> Result<()> {
             .header("Key", APIKEY)
             .send()?;
 
-        if !response.status().is_success() { println!("Queue check failed with status: {}", response.status()); failcount += 1; continue; }
+        if !response.status().is_success() { println!("Queue check failed with status: {}", response.status()); failcount += 1; if failcount >= MAXFAILS || elapsedtime >= MAXWAIT { println!("Obfuscation failed ..."); break; } continue; }
 
         let rsp: serde_json::Value =
             serde_json::from_str(&response.text()?).expect("Unable to decode JSON");
