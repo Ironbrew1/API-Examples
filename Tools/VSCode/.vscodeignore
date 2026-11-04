@@ -1,0 +1,7 @@
+node_modules/**
+test/**
+.vscode-test/**
+.gitignore
+.vscodeignore
+package-lock.json
+*.vsix

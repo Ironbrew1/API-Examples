@@ -1,0 +1,129 @@
+{
+  "name": "ironbrew1",
+  "displayName": "Ironbrew1",
+  "description": "Obfuscate Lua and Luau scripts with the Ironbrew1 API.",
+  "version": "0.1.0",
+  "publisher": "CEOofKohler",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CEOofKohler/API-Examples.git",
+    "directory": "VSCode"
+  },
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "lua",
+    "luau",
+    "roblox",
+    "ironbrew1",
+    "obfuscation"
+  ],
+  "main": "./src/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --no-dependencies --allow-missing-repository --skip-license"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "ironbrew1.obfuscate",
+        "title": "Obfuscate Current Script",
+        "category": "Ironbrew1",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "ironbrew1.setApiKey",
+        "title": "Set API Key",
+        "category": "Ironbrew1"
+      },
+      {
+        "command": "ironbrew1.clearApiKey",
+        "title": "Forget API Key",
+        "category": "Ironbrew1"
+      },
+      {
+        "command": "ironbrew1.options",
+        "title": "Obfuscation Options",
+        "category": "Ironbrew1"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "ironbrew1.obfuscate",
+          "when": "resourceExtname =~ /\\.(lua|luau)$/ && isWorkspaceTrusted",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "ironbrew1.obfuscate",
+          "when": "resourceExtname =~ /\\.(lua|luau)$/ && isWorkspaceTrusted",
+          "group": "ironbrew1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Ironbrew1",
+      "properties": {
+        "ironbrew1.platform": {
+          "type": "string",
+          "enum": [
+            "roblox",
+            "luau",
+            "universal"
+          ],
+          "default": "roblox",
+          "scope": "window",
+          "description": "Target Lua runtime."
+        },
+        "ironbrew1.aggressiveOptimizations": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1",
+            "2"
+          ],
+          "default": "0",
+          "scope": "window",
+          "description": "Optimization level."
+        },
+        "ironbrew1.intenseVmScrambling": {
+          "type": "boolean",
+          "default": false,
+          "scope": "window",
+          "description": "Enable intense VM scrambling."
+        },
+        "ironbrew1.enableVmCompression": {
+          "type": "boolean",
+          "default": false,
+          "scope": "window",
+          "description": "Enable VM compression."
+        }
+      }
+    }
+  },
+  "overrides": {
+    "@azure/identity": {
+      "@azure/msal-node": "7.1.1"
+    }
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0"
+  }
+}
