@@ -3,7 +3,7 @@ const assert = require("node:assert/strict");
 const vscode = require("vscode");
 
 exports.run = async () => {
-  const extension = vscode.extensions.getExtension("CEOofKohler.ironbrew1");
+  const extension = vscode.extensions.getExtension("Ironbrew1.ironbrew1");
   assert.ok(extension, "Extension must be recognized by VS Code");
   await extension.activate();
   assert.ok(extension.isActive);
