@@ -58,7 +58,7 @@ next to it, and run it from inside its folder.
 | JavaScript | [`Examples/JavaScript`](Examples/JavaScript) | `node index.js` | Node 18+ (or Bun) | Yes |
 | Julia | [`Examples/Julia`](Examples/Julia) | `julia script.jl` | Julia | Yes |
 | Kotlin | [`Examples/Kotlin`](Examples/Kotlin) | `kotlinc Main.kt -include-runtime -d main.jar && java -jar main.jar` | Kotlin, Java 11+ | Yes |
-| Lua (Roblox Studio plugin) | [`Tools/RobloxPlugin.luau`](Tools/RobloxPlugin.luau) | install as a plugin | Roblox Studio | Yes (author) |
+| Lua (Roblox Studio plugin) | [`Tools/RobloxPlugin.luau`](Tools/RobloxPlugin.luau) | install as a plugin | Roblox Studio | Yes |
 | Lua (standalone) | [`Examples/LuaStandalone`](Examples/LuaStandalone) | `lua script.lua` | LuaSocket, LuaSec, dkjson | Yes |
 | Luau (Lune) | [`Examples/Luau`](Examples/Luau) | `lune run script.luau` | [Lune](https://lune-org.github.io/docs) | Yes |
 | Modula-2 | [`Examples/Modula2`](Examples/Modula2) | `gm2 main.mod -o main -lcurl && ./main` | GNU Modula-2 (gm2), libcurl | Yes |
@@ -95,8 +95,7 @@ next to it, and run it from inside its folder.
 | Zig | [`Examples/Zig`](Examples/Zig) | `zig run main.zig` | Zig 0.14 | Yes |
 
 "Tested" means the example was run against the live API and produced an obfuscated `output.lua`.
-The Windows examples were tested in a Windows 10 Enterprise Evaluation VM. The Roblox Studio
-plugin was confirmed working by its author.
+The Windows examples were tested in a Windows 10 Enterprise Evaluation VM.
 
 The Ada, Assembly, COBOL, Forth, Fortran and Modula-2 examples call libcurl directly (the API is HTTPS-only, and a TLS
 stack isn't something you write in raw assembly). They stream the request and response bodies through C
