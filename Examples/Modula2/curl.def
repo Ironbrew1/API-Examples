@@ -1,0 +1,18 @@
+(* The parts of libcurl's easy interface this example uses. curl_easy_setopt is variadic in
+   C, so the option value is passed through the "..." parameter list. *)
+DEFINITION MODULE FOR "C" curl ;
+
+FROM SYSTEM IMPORT ADDRESS ;
+
+EXPORT UNQUALIFIED curl_easy_init, curl_easy_setopt, curl_easy_perform, curl_easy_getinfo,
+                   curl_easy_cleanup, curl_slist_append, curl_slist_free_all ;
+
+PROCEDURE curl_easy_init () : ADDRESS ;
+PROCEDURE curl_easy_setopt (handle: ADDRESS; option: INTEGER; ...) : INTEGER ;
+PROCEDURE curl_easy_perform (handle: ADDRESS) : INTEGER ;
+PROCEDURE curl_easy_getinfo (handle: ADDRESS; info: INTEGER; ...) : INTEGER ;
+PROCEDURE curl_easy_cleanup (handle: ADDRESS) ;
+PROCEDURE curl_slist_append (list: ADDRESS; value: ADDRESS) : ADDRESS ;
+PROCEDURE curl_slist_free_all (list: ADDRESS) ;
+
+END curl.

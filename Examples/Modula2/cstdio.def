@@ -1,0 +1,16 @@
+(* The few libc functions this example needs; gm2's libc module does not cover the
+   buffered stdio family. *)
+DEFINITION MODULE FOR "C" cstdio ;
+
+FROM SYSTEM IMPORT ADDRESS ;
+
+EXPORT UNQUALIFIED fopen, fmemopen, fclose, fseek, ftell, rewind ;
+
+PROCEDURE fopen (path: ADDRESS; mode: ADDRESS) : ADDRESS ;
+PROCEDURE fmemopen (buffer: ADDRESS; size: CARDINAL; mode: ADDRESS) : ADDRESS ;
+PROCEDURE fclose (stream: ADDRESS) : INTEGER ;
+PROCEDURE fseek (stream: ADDRESS; offset: LONGINT; whence: INTEGER) : INTEGER ;
+PROCEDURE ftell (stream: ADDRESS) : LONGINT ;
+PROCEDURE rewind (stream: ADDRESS) ;
+
+END cstdio.

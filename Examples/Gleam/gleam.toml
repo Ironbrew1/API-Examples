@@ -1,0 +1,11 @@
+name = "ironbrew"
+version = "1.0.0"
+
+# Run with: gleam run   (needs Erlang/OTP; dependencies are downloaded on first run)
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+gleam_http = ">= 3.7.0 and < 5.0.0"
+gleam_httpc = ">= 4.0.0 and < 6.0.0"
+gleam_json = ">= 2.0.0 and < 4.0.0"
+gleam_erlang = ">= 0.34.0 and < 2.0.0"
+simplifile = ">= 2.0.0 and < 3.0.0"
