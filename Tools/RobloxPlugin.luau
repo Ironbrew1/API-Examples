@@ -42,18 +42,12 @@ for I,V in pairs(options) do
 	obfmenu:AddMenu(treemenu)
 	for i,v in pairs(V) do
 		treemenu:AddNewAction(math.random(), v, "").Triggered:Connect(function()
-			local oldsetting = getoption(I)
+			local oldsetting = plugin:GetSetting(I)
 			if oldsetting == v then return end
 			print("Set "..I.." to "..v.." (previous setting was "..oldsetting..")")
 			plugin:SetSetting(I, v)
 		end)
 	end
-end
-
-local function getoption(name)
-	local saved = plugin:GetSetting(name)
-	if saved ~= nil and table.find(options[name], saved) then return saved end
-	return options[name][1]
 end
 
 local function openapikeyprompt()
@@ -88,7 +82,7 @@ obfaction.Triggered:Connect(function()
 	if active:IsA("ModuleScript") then warn("ModuleScripts are not supported.") return end
 	
 	local optionsstring = "?"
-	for i,v in pairs(options) do optionsstring = optionsstring..i.."="..getoption(i).."&" end
+	for i,v in pairs(options) do optionsstring = optionsstring..i.."="..plugin:GetSetting(i).."&" end
 	optionsstring = optionsstring:sub(1, #optionsstring-1)
 	local queueSuccess, queueResponse = pcall(reqasync, "/obfuscate"..optionsstring, "POST", active.Source)
 
@@ -97,7 +91,7 @@ obfaction.Triggered:Connect(function()
 		local elapsedtime = 0
 		local failcount = 0
 		local waittime = 0
-		local response = {}
+		local response = ""
 		repeat
 			waittime += retrydelay
 			task.wait(waittime)
@@ -108,12 +102,11 @@ obfaction.Triggered:Connect(function()
 				if response["status"] == "processing" then if elapsedtime <= maxwait then print("Obfuscation is still in progress. Elapsed time: "..elapsedtime.." seconds. Checking again in "..waittime + retrydelay.." seconds.") else warn("Obfuscation timed out (>"..maxwait.." seconds)") end end
 			else
 				failcount += 1
-				warn("Request failed "..failcount.." time(s). Error data: "..(completion and (tostring(data.StatusCode).." "..tostring(data.Body)) or tostring(data)))
+				warn("Request failed "..failcount.." time(s). Error data: "..data)
 			end
-		until failcount >= maxfails or elapsedtime > maxwait or (response["status"] ~= nil and table.find(breakconditions, response["status"]))
-		if response["status"] ~= "completed" then warn("Obfuscation failed. Please try again later. ("..elapsedtime.."/"..failcount.."/"..tostring(response["status"])..")") return end
+		until failcount >= maxfails or elapsedtime > maxwait or table.find(breakconditions, response["status"])
+		if response["status"] ~= "completed" then warn("Obfuscation failed. Please try again later. ("..elapsedtime.."/"..failcount.."/"..response["status"]..")") return end
 		local succ, download = pcall(reqasync, response["downloadUrl"], "GET")
-		if not succ or not download.Success then warn("Unable to download the obfuscated script: "..tostring(succ and download.StatusCode or download)) return end
 		local newscript = active:Clone()
 		ScriptEditorService:UpdateSourceAsync(newscript, function()
 			return download.Body
